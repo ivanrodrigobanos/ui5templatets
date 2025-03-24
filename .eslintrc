@@ -1,0 +1,20 @@
+{
+  "extends": "plugin:@sap-ux/eslint-plugin-fiori-tools/defaultTS",
+  "rules": {
+    "linebreak-style": "off",
+    "curly": "off",
+    "camelcase": "off",
+    "@typescript-eslint/no-unsafe-call": "off",
+    "@typescript-eslint/no-unsafe-assignment": "off",
+    "@typescript-eslint/no-unsafe-member-access": "off",
+    "@typescript-eslint/no-explicit-any": "off",
+    "valid-jsdoc": "off",
+    "no-shadow": "off",
+    "no-console": "off",
+    "@typescript-eslint/no-this-alias": "off",
+    "comma-dangle": "off",
+    "@typescript-eslint/no-unnecessary-type-assertion": "off",
+    "@typescript-eslint/no-unsafe-return": "off"
+  },
+  "root": true
+}
