@@ -59,7 +59,14 @@ export default abstract class BaseController extends Controller {
       this.getOwnerComponent().getModel("i18n") as ResourceModel
     ).getResourceBundle() as ResourceBundle;
   }
-
+  /**
+   * Simplifica la llamada para devolver un texto del i18n
+   * @param text
+   * @returns
+   */
+  public getTextI18n(text: string, aArgs?: any[]): string {
+    return this.geti18nResourceBundle().getText(text, aArgs) ?? "";
+  }
   /**
    * Event handler for navigating back.
    * It there is a history entry we go one step back in the browser history
