@@ -1,5 +1,12 @@
-import { CRITICALLY } from "cfwreport/constants/treeConstants";
 import { ValueState } from "sap/ui/core/library";
+
+export const CRITICALLY = {
+  SUCCES: 3,
+  WARNING: 2,
+  ERROR: 1,
+  INFORMATION: 5,
+  NEUTRAL: 0,
+};
 
 export default class Conversion {
   /**
