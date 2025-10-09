@@ -130,7 +130,11 @@ export default class SmartfilterbarUtils {
         else if (row.operation == "GT") operator = FilterOperator.LE;
         else if (row.operation == "LE") operator = FilterOperator.GT;
         else if (row.operation == "GE") operator = FilterOperator.LT;
+        else if (row.operation == "Empty") operator = FilterOperator.NE;
+      } else {
+        if (row.operation == "Empty") operator = FilterOperator.EQ;
       }
+
       filters.push(
         new Filter(filterKey, operator as FilterOperator, value1, value2)
       );
