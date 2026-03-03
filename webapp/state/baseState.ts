@@ -5,7 +5,7 @@ import BaseStateSimple from "./baseStateSimple";
 
 export default class BaseState<
   T extends BaseService,
-  R extends object
+  R extends object,
 > extends BaseStateSimple {
   protected service: T;
   protected data: R;
@@ -18,6 +18,8 @@ export default class BaseState<
   public getModel(): JSONModel {
     if (!this.model) {
       this.model = new JSONModel(this.data);
+      // Se amplia le limite para que se puedan mostrar todos los valores posibles.
+      this.model.setSizeLimit(50000);
     }
     return this.model;
   }
