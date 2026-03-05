@@ -20,16 +20,22 @@ export type ResponseService = {
   statusText: string;
   headers: Record<string, any>;
 };
+export const SEVERITY = {
+  SUCCESS: "success",
+  ERROR: "error",
+  WARNING: "warning",
+  INFORMATION: "information",
+};
 export default class RapUtils {
   /**
    * Convierte el valor del campo severity en valueState
    * @param severity
    */
   static convertSeverity2ValueState(severity: string): ValueState {
-    if (severity === "success") return ValueState.Success;
-    if (severity === "error") return ValueState.Error;
-    if (severity === "warning") return ValueState.Warning;
-    if (severity === "information") return ValueState.Information;
+    if (severity === SEVERITY.SUCCESS) return ValueState.Success;
+    if (severity === SEVERITY.ERROR) return ValueState.Error;
+    if (severity === SEVERITY.WARNING) return ValueState.Warning;
+    if (severity === SEVERITY.INFORMATION) return ValueState.Information;
 
     return ValueState.None;
   }
