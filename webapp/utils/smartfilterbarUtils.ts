@@ -1,9 +1,7 @@
-/* eslint-disable eqeqeq */
 import SmartFilterBar from "sap/ui/comp/smartfilterbar/SmartFilterBar";
 import Filter from "sap/ui/model/Filter";
 import FilterOperator from "sap/ui/model/FilterOperator";
 import DateFormat from "./dateFormat";
-
 export default class SmartfilterbarUtils {
   private sfb: SmartFilterBar;
   constructor(smartfilterbar: SmartFilterBar) {
@@ -39,24 +37,24 @@ export default class SmartfilterbarUtils {
           filterKey,
           FilterOperator.BT,
           this.convertValue(filterKey, filterRow.low),
-          this.convertValue(filterKey, filterRow.high)
-        )
+          this.convertValue(filterKey, filterRow.high),
+        ),
       );
     } else if (filterRow.items && filterRow.items.length > 0) {
       filters = filters.concat(
-        this.convertItems2FilterObject(filterKey, filterRow.items)
+        this.convertItems2FilterObject(filterKey, filterRow.items),
       );
     } else if (filterRow.ranges && filterRow.ranges.length > 0) {
       filters = filters.concat(
-        this.convertRanges2FilterObject(filterKey, filterRow.ranges)
+        this.convertRanges2FilterObject(filterKey, filterRow.ranges),
       );
     } else {
       filters.push(
         new Filter(
           filterKey,
           FilterOperator.EQ,
-          this.convertValue(filterKey, filterRow)
-        )
+          this.convertValue(filterKey, filterRow),
+        ),
       );
     }
 
@@ -68,7 +66,7 @@ export default class SmartfilterbarUtils {
    */
   private convertItems2FilterObject(
     filterKey: string,
-    filterItems: any
+    filterItems: any,
   ): Filter[] {
     let filters: Filter[] = [];
     if (!filterItems) return [];
@@ -101,6 +99,15 @@ export default class SmartfilterbarUtils {
     if (modelData[filterKey] && modelData[filterKey] instanceof Date)
       return true;
 
+    if (
+      modelData[filterKey] &&
+      modelData[filterKey].ranges &&
+      modelData[filterKey].ranges.length > 0
+    ) {
+      let range = modelData[filterKey].ranges[0];
+      if (range.value1 && range.value1 instanceof Date) return true;
+    }
+
     return false;
   }
   /**
@@ -109,34 +116,34 @@ export default class SmartfilterbarUtils {
    */
   private convertRanges2FilterObject(
     filterKey: string,
-    filterRanges: any
+    filterRanges: any,
   ): Filter[] {
     let filters: Filter[] = [];
     if (!filterRanges) return [];
     filterRanges.forEach((row: any) => {
-      let value1 = row.value1;
+      let value1 = this.convertValue(filterKey, row.value1);
       let operator = row.operation;
-      let value2 = row.value2 ?? "";
+      let value2 = row.value2 ? this.convertValue(filterKey, row.value2) : "";
       if (row.key) value1 = row.key;
       if (row.exclude) {
-        if (row.operation == "Contains") operator = FilterOperator.NotContains;
-        else if (row.operation == "BT") operator = FilterOperator.NB;
-        else if (row.operation == "EQ") operator = FilterOperator.NE;
-        else if (row.operation == "StartsWith")
+        if (row.operation === "Contains") operator = FilterOperator.NotContains;
+        else if (row.operation === "BT") operator = FilterOperator.NB;
+        else if (row.operation === "EQ") operator = FilterOperator.NE;
+        else if (row.operation === "StartsWith")
           operator = FilterOperator.NotStartsWith;
-        else if (row.operation == "EndsWith")
+        else if (row.operation === "EndsWith")
           operator = FilterOperator.NotEndsWith;
-        else if (row.operation == "LT") operator = FilterOperator.GE;
-        else if (row.operation == "GT") operator = FilterOperator.LE;
-        else if (row.operation == "LE") operator = FilterOperator.GT;
-        else if (row.operation == "GE") operator = FilterOperator.LT;
-        else if (row.operation == "Empty") operator = FilterOperator.NE;
+        else if (row.operation === "LT") operator = FilterOperator.GE;
+        else if (row.operation === "GT") operator = FilterOperator.LE;
+        else if (row.operation === "LE") operator = FilterOperator.GT;
+        else if (row.operation === "GE") operator = FilterOperator.LT;
+        else if (row.operation === "Empty") operator = FilterOperator.NE;
       } else {
-        if (row.operation == "Empty") operator = FilterOperator.EQ;
+        if (row.operation === "Empty") operator = FilterOperator.EQ;
       }
 
       filters.push(
-        new Filter(filterKey, operator as FilterOperator, value1, value2)
+        new Filter(filterKey, operator as FilterOperator, value1, value2),
       );
     });
 
@@ -150,7 +157,7 @@ export default class SmartfilterbarUtils {
    */
   public convertObject2CustomFilter(
     filterKey: string,
-    sfbObject: any
+    sfbObject: any,
   ): Filter[] {
     let filters: Filter[] = [];
     if (!sfbObject) return [];
@@ -165,8 +172,8 @@ export default class SmartfilterbarUtils {
         filters = filters.concat(
           this.convertRanges2FilterObject(
             row.keyField as string,
-            sfbObject.ranges
-          )
+            sfbObject.ranges,
+          ),
         );
       });
     }
