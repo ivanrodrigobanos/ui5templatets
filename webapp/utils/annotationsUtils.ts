@@ -2,12 +2,26 @@ import Component from "../Component";
 import Model from "sap/ui/model/Model";
 import ODataModel from "sap/ui/model/odata/v2/ODataModel";
 
+const TEXT_ARRANGAMENT = {
+  TEXT_ONLY: "TextArrangementType/TextOnly",
+  TEXT_LAST: "TextArrangementType/TextLast",
+  TEXT_FIRST: "TextArrangementType/TextFirst",
+  TEXT_SEPARATE: "TextArrangementType/TextSeparate",
+};
+
+export enum FieldTextArrangament {
+  TextOnly = "TextOnly",
+  Textlast = "TextLast",
+  TextFirst = "TextFirst",
+  TextSeparate = "TextSeparate",
+}
 export interface FieldProperty {
   name: string;
   label: string;
   quickinfo: string;
   fieldText: string;
   maxLength: number;
+  fieldTextArrangement?: FieldTextArrangament;
 }
 export type FieldProperties = FieldProperty[];
 export interface FieldMetadata extends FieldProperty {
@@ -144,12 +158,48 @@ export default class AnnotationsUtils {
     fieldname: string,
   ): FieldProperty {
     const property = properties.find((prop) => prop.name === fieldname);
-    return {
+    let fieldProperty: FieldProperty = {
       label: property?.["sap:label"] ?? "",
       quickinfo: property?.["sap:quickinfo"] ?? "",
       fieldText: property?.["sap:text"] ?? "",
       maxLength: property.maxLength ?? 0,
       name: property.name ?? "",
     };
+    // Si hay campo de texto se indica que el tipo de formateo del texto segun la anotación.
+    // Como la anotación puede que no este le pongo una por defecto.
+    if (fieldProperty.fieldText !== "")
+      fieldProperty.fieldTextArrangement = this.getTextArrangement(property);
+
+    return fieldProperty;
+  }
+  /**
+   * Devuelve el el tipo de formato del texto en campos de texto
+   * @param property
+   * @returns
+   */
+  private getTextArrangement(property: any): FieldTextArrangament {
+    const textArrangament = property["com.sap.vocabularies.Common.v1.Text"][
+      "com.sap.vocabularies.UI.v1.TextArrangement"
+    ]?.EnumMember as string;
+
+    if (
+      textArrangament &&
+      textArrangament.includes(TEXT_ARRANGAMENT.TEXT_FIRST)
+    )
+      return FieldTextArrangament.TextFirst;
+
+    if (textArrangament && textArrangament.includes(TEXT_ARRANGAMENT.TEXT_LAST))
+      return FieldTextArrangament.Textlast;
+
+    if (textArrangament && textArrangament.includes(TEXT_ARRANGAMENT.TEXT_ONLY))
+      return FieldTextArrangament.TextOnly;
+
+    if (
+      textArrangament &&
+      textArrangament.includes(TEXT_ARRANGAMENT.TEXT_SEPARATE)
+    )
+      return FieldTextArrangament.TextFirst;
+
+    return FieldTextArrangament.TextFirst;
   }
 }
